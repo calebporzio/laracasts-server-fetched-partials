@@ -1,18 +1,26 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
+use App\User;
 
-/*
-|--------------------------------------------------------------------------
-| Console Routes
-|--------------------------------------------------------------------------
-|
-| This file is where you may define all of your Closure based console
-| commands. Each Closure is bound to a command instance allowing a
-| simple approach to interacting with each command's IO methods.
-|
-*/
+Artisan::command('import-user-from-gh {username}', function ($username) {
+    $opts = [
+        'http' => [
+            'method' => 'GET',
+            'header' => [
+                'User-Agent: PHP',
+            ],
+        ],
+    ];
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->describe('Display an inspiring quote');
+    $context = stream_context_create($opts);
+
+    $user = json_decode(file_get_contents('https://api.github.com/users/'.$username, false, $context), true);
+
+    User::firstOrCreate(['name' => $user['name']], [
+        'name' => $user['name'],
+        'username' => $user['login'],
+        'avatar' => $user['avatar_url'],
+        'bio' => $user['bio'] ?? '',
+        'profile' => $user['html_url'],
+    ]);
+});
