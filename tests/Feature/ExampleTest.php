@@ -7,12 +7,14 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testBasicTest()
+    protected $something;
+
+    public function __construct($something)
+    {
+        $this->something = $something;
+    }
+
+    public function testBasicTest($hey)
     {
         $response = $this->get('/');
 

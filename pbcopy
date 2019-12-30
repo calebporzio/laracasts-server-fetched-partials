@@ -1,0 +1,11 @@
+import { mount } from '@vue/test-utils'
+import Invoices from '@/Invoices.vue'
+import Vue from 'vue'
+
+it('shows invoices', async () => {
+    const wrapper = mount(Invoices);
+
+    await Vue.nextTick()
+
+    expect(wrapper.html()).toContain('$500.00')
+})
